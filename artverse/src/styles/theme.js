@@ -1,0 +1,42 @@
+export const theme = {
+  colors: {
+    black: '#080808',
+    surface: '#0f0f0f',
+    surface2: '#161616',
+    surface3: '#1e1e1e',
+    red: '#c0392b',
+    redBright: '#e74c3c',
+    redDim: '#7a1f16',
+    text: '#f0ece4',
+    textMuted: '#8a8278',
+    textDim: '#4a4642',
+    border: '#222222',
+    borderHover: '#333333',
+  },
+  fonts: {
+    display: "'Bebas Neue', sans-serif",
+    serif: "'Cormorant Garamond', serif",
+    mono: "'DM Mono', monospace",
+  },
+  spacing: {
+    xs: '4px',
+    sm: '8px',
+    md: '16px',
+    lg: '24px',
+    xl: '40px',
+    xxl: '64px',
+  },
+  breakpoints: {
+    sm: '480px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+  },
+  navHeight: '56px',
+  filterBarHeight: '52px',
+  transitions: {
+    fast: '0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+    smooth: '0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+    slow: '0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+  },
+};
