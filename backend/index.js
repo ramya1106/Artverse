@@ -87,7 +87,12 @@ const authMiddleware = (req, res, next) => {
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://artverse-vs7l.onrender.com"
+  ]
+}));
 
 app.get("/artverse/gallery", async (req, res) => {
   try {

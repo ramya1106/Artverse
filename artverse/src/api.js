@@ -1,3 +1,7 @@
+// ============================================================
+// Backend API URL
+// ============================================================
+const API_URL = "https://artverse-backend-xv3i.onrender.com";
 
 // ============================================================
 // Admin auth token — kept in sessionStorage so a page refresh
@@ -5,9 +9,14 @@
 // ============================================================
 const TOKEN_KEY = "artverse_admin_token";
 
-export const setAdminToken = (token) => sessionStorage.setItem(TOKEN_KEY, token);
-export const clearAdminToken = () => sessionStorage.removeItem(TOKEN_KEY);
-export const getAdminToken = () => sessionStorage.getItem(TOKEN_KEY);
+export const setAdminToken = (token) =>
+  sessionStorage.setItem(TOKEN_KEY, token);
+
+export const clearAdminToken = () =>
+  sessionStorage.removeItem(TOKEN_KEY);
+
+export const getAdminToken = () =>
+  sessionStorage.getItem(TOKEN_KEY);
 
 // Small helper so upload/updateFollowers don't each repeat this
 const authHeader = () => {
@@ -20,29 +29,31 @@ const authHeader = () => {
 // Checks username/password against the DB and returns a JWT
 // ============================================================
 export const loginAdmin = async (username, password) => {
-  const response = await fetch("/artverse/auth/login", {
+  const response = await fetch(`${API_URL}/artverse/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
   });
+
   if (!response.ok) {
     const err = await response.json();
     throw new Error(err.error || "Login failed");
   }
+
   return response.json(); // { token }
 };
 
+// ============================================================
+// GET /artverse/gallery
+// Returns all artworks
+// ============================================================
 export const fetchGallery = async () => {
-  // fetch() sends an HTTP GET request (GET is the default)
-  const response = await fetch("/artverse/gallery");
+  const response = await fetch(`${API_URL}/artverse/gallery`);
 
-  // If the server returned an error code (like 500), throw an error
   if (!response.ok) {
     throw new Error("Failed to load gallery");
   }
 
-  // .json() reads the response body and converts it from JSON text
-  // into a real JavaScript array/object
   return response.json();
 };
 
@@ -51,7 +62,9 @@ export const fetchGallery = async () => {
 // Returns artworks for one category only
 // ============================================================
 export const fetchGalleryByCategory = async (category) => {
-  const response = await fetch(`/artverse/gallery/${category}`);
+  const response = await fetch(
+    `${API_URL}/artverse/gallery/${category}`
+  );
 
   if (!response.ok) {
     throw new Error(`Failed to load ${category} artworks`);
@@ -65,7 +78,7 @@ export const fetchGalleryByCategory = async (category) => {
 // Returns 6 most recently uploaded artworks
 // ============================================================
 export const fetchLatest = async () => {
-  const response = await fetch("/artverse/latest");
+  const response = await fetch(`${API_URL}/artverse/latest`);
 
   if (!response.ok) {
     throw new Error("Failed to load latest artworks");
@@ -79,7 +92,7 @@ export const fetchLatest = async () => {
 // Returns { totalPosts, totalDownloads, instagramFollowers }
 // ============================================================
 export const fetchStats = async () => {
-  const response = await fetch("/artverse/stats");
+  const response = await fetch(`${API_URL}/artverse/stats`);
 
   if (!response.ok) {
     throw new Error("Failed to load stats");
@@ -94,14 +107,20 @@ export const fetchStats = async () => {
 // Call this when the user taps the download button
 // ============================================================
 export const trackDownload = async (artworkId) => {
-  const response = await fetch(`/artverse/download/${artworkId}`, {
-    method: "POST", // this is a POST request, not GET
-  });
+  const response = await fetch(
+    `${API_URL}/artverse/download/${artworkId}`,
+    {
+      method: "POST",
+    }
+  );
 
   if (!response.ok) {
     // Don't crash the whole page if tracking fails
     // Just log it quietly
-    console.warn("Download tracking failed for artwork:", artworkId);
+    console.warn(
+      "Download tracking failed for artwork:",
+      artworkId
+    );
     return null;
   }
 
@@ -111,20 +130,18 @@ export const trackDownload = async (artworkId) => {
 // ============================================================
 // POST /artverse/upload
 // Admin: upload an image file + category to the backend
-//
-// FormData is a special object for sending files.
-// You can't send a file as normal JSON.
 // ============================================================
 export const uploadArtwork = async (file, category) => {
-  // FormData lets you package a file alongside text fields
   const formData = new FormData();
-  formData.append("image", file);       // "image" must match multer's upload.single("image")
+
+  formData.append("image", file);
   formData.append("category", category);
 
-  const response = await fetch("/artverse/upload", {
+  const response = await fetch(`${API_URL}/artverse/upload`, {
     method: "POST",
     headers: authHeader(),
-    // DO NOT set Content-Type header manually when using FormData.
+
+    // DO NOT set Content-Type manually when using FormData.
     // The browser sets it automatically with the correct boundary.
     body: formData,
   });
@@ -134,7 +151,7 @@ export const uploadArtwork = async (file, category) => {
     throw new Error(err.error || "Upload failed");
   }
 
-  return response.json(); // returns the saved MongoDB document
+  return response.json();
 };
 
 // ============================================================
@@ -142,20 +159,25 @@ export const uploadArtwork = async (file, category) => {
 // Admin: update the Instagram follower count
 // ============================================================
 export const updateFollowers = async (count) => {
-  const response = await fetch("/artverse/stats/followers", {
-    method: "PATCH", // PATCH = partial update
-    headers: {
-      // Tell the backend we're sending JSON
-      "Content-Type": "application/json",
-      ...authHeader(),
-    },
-    // JSON.stringify converts the JS object to a JSON string
-    body: JSON.stringify({ instagramFollowers: count }),
-  });
+  const response = await fetch(
+    `${API_URL}/artverse/stats/followers`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        ...authHeader(),
+      },
+      body: JSON.stringify({
+        instagramFollowers: count,
+      }),
+    }
+  );
 
   if (!response.ok) {
     const err = await response.json();
-    throw new Error(err.error || "Failed to update followers");
+    throw new Error(
+      err.error || "Failed to update followers"
+    );
   }
 
   return response.json();
