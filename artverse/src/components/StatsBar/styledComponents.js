@@ -4,6 +4,8 @@ export const StatsSection = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.border};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.surface};
+  position: relative;
+  z-index: 1;
 `;
 
 export const StatsHeadingRow = styled.div`
@@ -32,7 +34,6 @@ export const StatsTitle = styled.h2`
   font-style: italic;
   color: ${({ theme }) => theme.colors.text};
   line-height: 1.15;
-  margin-bottom: 0;
 `;
 
 export const StatsInner = styled.div`

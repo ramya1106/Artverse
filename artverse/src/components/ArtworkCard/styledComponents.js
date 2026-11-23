@@ -5,10 +5,6 @@ const shimmer = keyframes`
   100% { transform: translateX(100%); }
 `;
 
-const spin = keyframes`
-  to { transform: rotate(360deg); }
-`;
-
 export const CardWrapper = styled.div`
   break-inside: avoid;
   margin-bottom: 16px;
@@ -16,15 +12,10 @@ export const CardWrapper = styled.div`
   max-width: 220px;
   margin-left: auto;
   margin-right: auto;
-  display: block;
 
   &:hover img { transform: scale(1.03); }
   &:hover video { transform: scale(1.03); }
   &:hover [data-overlay] { opacity: 1; }
-  &:hover [data-dl] {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
 `;
 
 export const CardImage = styled.img`
@@ -42,13 +33,13 @@ export const CardImage = styled.img`
   &.loaded { opacity: 1; }
 `;
 
-// CardVideo mirrors CardImage but uses <video> semantics
+// Same as CardImage but for video
 export const CardVideo = styled.video`
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;   /* cover works better than fill for video aspect ratios */
+  object-fit: cover; /* videos look better with cover than fill */
   display: block;
   border-radius: 12px;
   background: ${({ theme }) => theme.colors.surface2};
@@ -90,51 +81,7 @@ export const CardOverlay = styled.div.attrs({ 'data-overlay': true })`
   transition: opacity ${({ theme }) => theme.transitions.smooth};
 `;
 
-export const DownloadButton = styled.button.attrs({ 'data-dl': true })`
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: ${({ theme }) => theme.colors.red};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transform: scale(0.75) translateY(8px);
-  transition: all ${({ theme }) => theme.transitions.smooth};
-  border: none;
-
-  &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.colors.redBright};
-    transform: scale(1.08) translateY(0) !important;
-  }
-
-  &:disabled {
-    cursor: wait;
-    opacity: 1 !important;
-    transform: scale(1) translateY(0) !important;
-  }
-
-  svg {
-    width: 15px;
-    height: 15px;
-    stroke: white;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-`;
-
-export const DownloadSpinner = styled.div`
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: ${spin} 0.7s linear infinite;
-`;
-
-// Small badge on video cards — tells the user it's a video before hover
+// Small badge that tells the user it is a video
 export const VideoPlayIndicator = styled.div`
   position: absolute;
   top: 8px;

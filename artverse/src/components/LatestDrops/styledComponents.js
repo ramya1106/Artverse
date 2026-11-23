@@ -17,8 +17,6 @@ export const SectionHeader = styled.div`
   gap: 1rem;
 `;
 
-export const SectionTitleGroup = styled.div``;
-
 export const SectionEyebrow = styled.span`
   display: block;
   font-size: 0.58rem;

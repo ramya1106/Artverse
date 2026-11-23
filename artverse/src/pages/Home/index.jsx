@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import Hero        from '../../components/Hero';
 import StatsBar    from '../../components/StatsBar';
 import LatestDrops from '../../components/LatestDrops';
@@ -17,6 +17,7 @@ import {
   FooterBottom, FooterCopy, FooterLegal,
 } from './styledComponents';
 
+// Smooth scroll to a section. The offset is the height of the fixed navbar.
 const scrollTo = (id, offset = 56) => {
   const el = document.getElementById(id);
   if (!el) return;
@@ -28,7 +29,7 @@ const INSTAGRAM_URL = 'https://www.instagram.com/a.rt._.verse/';
 const TWITTER_URL   = 'https://x.com/art_verse_ai';
 const KOFI_URL      = 'https://ko-fi.com/artverse03';
 
-// ── Social media SVG icons ────────────────────────────────
+// Social media icons
 const InstagramIcon = () => (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
@@ -47,8 +48,7 @@ const YoutubeIcon = () => (
   </svg>
 );
 
-// Ko-fi uses a coffee cup icon — they don't have a standard SVG brand mark,
-// so we use a clean coffee cup that represents "Buy me a coffee"
+// Ko-fi has no standard logo file, so a coffee cup is used
 const KofiIcon = () => (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 8h1a4 4 0 010 8h-1"/>
@@ -64,19 +64,16 @@ const Home = () => {
   const [currentPage,      setCurrentPage]      = useState(1);
   const [totalArtworks,    setTotalArtworks]    = useState(0);
 
+  // Changing the category always goes back to page 1
   const handleCategoryChange = useCallback((cat) => {
     setSelectedCategory(cat);
     setCurrentPage(1);
   }, []);
 
-  const handlePageChange = useCallback((page) => {
-    setCurrentPage(page);
-  }, []);
-
   return (
     <PageWrapper>
 
-      {/* ── NAVBAR ─────────────────────────────────────── */}
+      {/* Navbar */}
       <Navbar>
         <NavLogo onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           ART<span>V</span>ERSE
@@ -91,7 +88,7 @@ const Home = () => {
         </NavLinks>
       </Navbar>
 
-      {/* ── HERO ───────────────────────────────────────── */}
+      {/* Hero */}
       <Hero
         onExplore={() => scrollTo('gallery-section')}
         onInstagram={() => window.open(INSTAGRAM_URL, '_blank')}
@@ -99,15 +96,15 @@ const Home = () => {
 
       <StatsDivider />
 
-      {/* ── STATS ──────────────────────────────────────── */}
+      {/* Stats */}
       <StatsBar />
 
-      {/* ── LATEST DROPS ───────────────────────────────── */}
+      {/* Latest drops */}
       <div id="latest-drops">
         <LatestDrops />
       </div>
 
-      {/* ── GALLERY ────────────────────────────────────── */}
+      {/* Gallery */}
       <GalleryAnchor id="filterbar-anchor" />
       <div id="gallery-section">
         <FilterBar
@@ -124,10 +121,10 @@ const Home = () => {
       <Pagination
         totalItems={totalArtworks}
         currentPage={currentPage}
-        onPageChange={handlePageChange}
+        onPageChange={setCurrentPage}
       />
 
-      {/* ── FOOTER ─────────────────────────────────────── */}
+      {/* Footer */}
       <PageFooter id="site-footer">
         <FooterTop>
 

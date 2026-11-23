@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { uploadArtwork } from '../../api';
+import { Spinner, Label } from '../../styles/shared';
 import {
   FormWrapper,
   DropZone,
@@ -13,11 +14,9 @@ import {
   PreviewOverlay,
   RemoveButton,
   FormGroup,
-  Label,
   Select,
   VideoBadge,
   SubmitButton,
-  Spinner,
   SuccessCard,
   SuccessIconWrapper,
   SuccessTitle,
@@ -25,6 +24,7 @@ import {
   ResetButton,
 } from './styledComponents';
 
+// Videos are not listed because they always go to Live Wallpapers
 const IMAGE_CATEGORIES = ['Epic', 'Top', 'Premium'];
 
 const UploadIcon = () => (
@@ -102,13 +102,10 @@ const UploadPost = () => {
     }
   };
 
+  // Back to an empty form after a successful upload
   const handleReset = () => {
     setSuccess(false);
-    setFile(null);
-    setPreview(null);
-    setIsVideo(false);
-    setCategory('Epic');
-    setError(null);
+    handleRemove();
   };
 
   if (success) {

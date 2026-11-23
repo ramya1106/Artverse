@@ -1,8 +1,10 @@
 import styled from 'styled-components';
 
 export const PageWrapper = styled.div`
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
-  background: ${({ theme }) => theme.colors.black};
+  background: transparent;   /* Hero shows canvas; sections below have their own bg */
 `;
 
 export const Navbar = styled.nav`
@@ -56,7 +58,6 @@ export const NavLink = styled.a`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
     display: none;
-    &:last-child { display: block; }
   }
 `;
 
@@ -93,7 +94,7 @@ export const GalleryAnchor = styled.div`
   );
 `;
 
-/* ── FOOTER ─────────────────────────────────────────────── */
+/* FOOTER */
 
 export const PageFooter = styled.footer`
   background: ${({ theme }) => theme.colors.surface};
@@ -105,7 +106,6 @@ export const PageFooter = styled.footer`
   }
 `;
 
-// index.jsx uses a 3-column footer: brand + two link cols
 export const FooterTop = styled.div`
   display: grid;
   grid-template-columns: 1.2fr 1fr 1fr;
@@ -139,14 +139,12 @@ export const FooterTagline = styled.p`
   margin-bottom: 1.5rem;
 `;
 
-// index.jsx uses SocialRow (not FooterSocials)
 export const SocialRow = styled.div`
   display: flex;
   gap: 0.75rem;
   align-items: center;
 `;
 
-// index.jsx uses SocialLink (not KofiLink / SocialLinks)
 export const SocialLink = styled.a`
   width: 36px;
   height: 36px;
@@ -172,10 +170,8 @@ export const SocialLink = styled.a`
   }
 `;
 
-// index.jsx uses FooterCol (not named anything else)
 export const FooterCol = styled.div``;
 
-// index.jsx uses FooterColTitle
 export const FooterColTitle = styled.p`
   font-size: 0.58rem;
   letter-spacing: 0.28em;
@@ -184,7 +180,6 @@ export const FooterColTitle = styled.p`
   margin-bottom: 1.25rem;
 `;
 
-// index.jsx uses FooterLinks
 export const FooterLinks = styled.ul`
   list-style: none;
   display: flex;
@@ -192,7 +187,6 @@ export const FooterLinks = styled.ul`
   gap: 0.8rem;
 `;
 
-// index.jsx uses FooterLinkItem
 export const FooterLinkItem = styled.li`
   a {
     font-size: 0.7rem;
@@ -218,7 +212,6 @@ export const FooterCopy = styled.p`
   color: ${({ theme }) => theme.colors.textDim};
 `;
 
-// index.jsx uses FooterLegal (not FooterNote)
 export const FooterLegal = styled.p`
   font-size: 0.58rem;
   letter-spacing: 0.08em;

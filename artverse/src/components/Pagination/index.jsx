@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { ITEMS_PER_PAGE } from "../../data/artworks";
 import {
   PaginationWrapper,
@@ -17,9 +17,9 @@ const buildPageRange = (current, total) => {
   return [1, "…", current-1, current, current+1, "…", total];
 };
 
-// totalItems  = real count from the backend (passed from Home)
-// currentPage = which page we're on
-// onPageChange = function to call when user clicks a page button
+// totalItems is the number of artworks in the current filter
+// currentPage is the page being shown
+// onPageChange is called with the new page number
 const Pagination = ({ totalItems, currentPage, onPageChange }) => {
   const totalPages = useMemo(
     () => Math.ceil(totalItems / ITEMS_PER_PAGE),
@@ -32,6 +32,7 @@ const Pagination = ({ totalItems, currentPage, onPageChange }) => {
 
   const handlePage = (page) => {
     onPageChange(page);
+    // Scroll back up to the filter bar. The admin gallery has no anchor, so it just stays put.
     const el = document.getElementById("filterbar-anchor");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };

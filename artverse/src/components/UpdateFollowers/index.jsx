@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { fetchStats, updateFollowers } from "../../api";
+import formatCount from "../../utils/formatCount";
+import { Spinner, Label } from "../../styles/shared";
 import {
   FormWrapper,
   CurrentCountCard,
@@ -7,10 +9,8 @@ import {
   CountValue,
   CountSub,
   FormGroup,
-  Label,
   NumberInput,
   UpdateButton,
-  Spinner,
   SuccessBadge,
 } from "./styledComponents";
 
@@ -20,26 +20,15 @@ const CheckIcon = () => (
   </svg>
 );
 
-// Format raw number for display: 120000 → { value: "120", suffix: "K" }
-const formatCount = (n) => {
-  if (!n && n !== 0) return { value: "—", suffix: "" };
-  if (n >= 1_000_000) return { value: (n / 1_000_000).toFixed(1), suffix: "M" };
-  if (n >= 1_000) {
-    const k = n / 1_000;
-    return { value: Number.isInteger(k) ? k.toString() : k.toFixed(1), suffix: "K" };
-  }
-  return { value: n.toString(), suffix: "" };
-};
-
 const UpdateFollowers = () => {
-  // currentCount = what's currently saved in MongoDB
+  // currentCount is the number saved in the database
   const [currentCount, setCurrentCount] = useState(null);
   const [inputValue,   setInputValue]   = useState("");
   const [updating,     setUpdating]     = useState(false);
   const [saved,        setSaved]        = useState(false);
   const [error,        setError]        = useState(null);
 
-  // ── Load the current count from the backend on mount ──
+  // Load the saved count when the tab opens
   useEffect(() => {
     const load = async () => {
       try {
@@ -55,7 +44,7 @@ const UpdateFollowers = () => {
   const handleUpdate = async () => {
     const parsed = parseInt(inputValue, 10);
 
-    // Basic validation before sending to the backend
+    // Quick check here, the backend checks again
     if (isNaN(parsed) || parsed < 0) {
       setError("Please enter a valid positive number");
       return;
@@ -66,15 +55,14 @@ const UpdateFollowers = () => {
     setError(null);
 
     try {
-      // PATCH /artverse/stats/followers  with { instagramFollowers: parsed }
       const updated = await updateFollowers(parsed);
 
-      // Update the displayed count with what the backend confirmed
+      // Show the number the backend saved
       setCurrentCount(updated.instagramFollowers);
       setInputValue("");
       setSaved(true);
 
-      // Hide the success message after 3.5 seconds
+      // Hide the success message after a few seconds
       setTimeout(() => setSaved(false), 3500);
     } catch (err) {
       setError(err.message);
@@ -128,7 +116,7 @@ const UpdateFollowers = () => {
       {saved && (
         <SuccessBadge>
           <CheckIcon />
-          <p>Saved to database — now showing {formatCount(currentCount).value}{formatCount(currentCount).suffix} followers.</p>
+          <p>Saved to database — now showing {value}{suffix} followers.</p>
         </SuccessBadge>
       )}
     </FormWrapper>

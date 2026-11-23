@@ -5,10 +5,6 @@ const fadeIn = keyframes`
   to   { opacity: 1; transform: translateY(0); }
 `;
 
-const spin = keyframes`
-  to { transform: rotate(360deg); }
-`;
-
 const checkDraw = keyframes`
   from { stroke-dashoffset: 50; }
   to   { stroke-dashoffset: 0; }
@@ -139,13 +135,6 @@ export const FormGroup = styled.div`
   margin-bottom: 1.5rem;
 `;
 
-export const Label = styled.label`
-  font-size: 0.58rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.textMuted};
-`;
-
 export const Select = styled.select`
   background: ${({ theme }) => theme.colors.surface2};
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -198,15 +187,6 @@ export const SubmitButton = styled.button`
 
   &:hover:not(:disabled) { background: ${({ theme }) => theme.colors.redBright}; }
   &:disabled { opacity: 0.45; cursor: not-allowed; }
-`;
-
-export const Spinner = styled.div`
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: ${spin} 0.7s linear infinite;
 `;
 
 export const SuccessCard = styled.div`

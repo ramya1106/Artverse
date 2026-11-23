@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import ArtworkCard from '../ArtworkCard';
+import PreviewModal from '../PreviewModal';
+import useWindowWidth from '../../hooks/useWindowWidth';
 import { fetchGallery, fetchGalleryByCategory } from '../../api';
 import { ITEMS_PER_PAGE } from '../../data/artworks';
 import {
@@ -30,27 +32,20 @@ const LoadingSkeleton = () => {
   );
 };
 
-// Column count from screen width only — always 6 on laptop as requested
+// Number of masonry columns for the screen width (6 on a laptop)
 const getColumnCount = (windowWidth) => {
   if (windowWidth >= 1600)      return 7;
-  if (windowWidth >= 1024)      return 6;  // laptop: 6 per row
+  if (windowWidth >= 1024)      return 6;
   if (windowWidth >= 768)       return 4;
   if (windowWidth >= 480)       return 3;
   return 2;
 };
 
-const useWindowWidth = () => {
-  const [width, setWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    const handle = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handle);
-    return () => window.removeEventListener('resize', handle);
-  }, []);
-  return width;
-};
-
-const Gallery = ({ selectedCategory, currentPage, onTotalChange }) => {
+// With adminMode the gallery is the same, but clicking a card opens the admin version of the
+// preview modal (stats, edit category, delete) instead of the visitor one.
+const Gallery = ({ selectedCategory, currentPage, onTotalChange, adminMode = false }) => {
   const [artworks, setArtworks] = useState([]);
+  const [selected, setSelected] = useState(null);
   const [loading,  setLoading]  = useState(true);
   const [error,    setError]    = useState(null);
   const windowWidth = useWindowWidth();
@@ -72,14 +67,37 @@ const Gallery = ({ selectedCategory, currentPage, onTotalChange }) => {
       }
     };
     load();
+    // Only reload when the category changes. onTotalChange is left out on purpose so a parent
+    // re-render can't trigger another fetch.
   }, [selectedCategory]);
 
+  // Admin edited a category. Update the card in place, or remove it if it no longer belongs
+  // to the category being filtered.
+  const handleCategoryChange = (updated) => {
+    setSelected(updated);
+    setArtworks((prev) => {
+      const next = selectedCategory !== 'All' && updated.category !== selectedCategory
+        ? prev.filter((a) => a._id !== updated._id)
+        : prev.map((a) => (a._id === updated._id ? updated : a));
+      if (onTotalChange) onTotalChange(next.length);
+      return next;
+    });
+  };
+
+  const handleDeleted = (id) => {
+    setArtworks((prev) => {
+      const next = prev.filter((a) => a._id !== id);
+      if (onTotalChange) onTotalChange(next.length);
+      return next;
+    });
+  };
+
+  // The whole list is fetched once and paged here in the browser
   const pageItems = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     return artworks.slice(start, start + ITEMS_PER_PAGE);
   }, [artworks, currentPage]);
 
-  
   const cols = getColumnCount(windowWidth);
 
   if (loading) return <GalleryWrapper><LoadingSkeleton /></GalleryWrapper>;
@@ -110,9 +128,22 @@ const Gallery = ({ selectedCategory, currentPage, onTotalChange }) => {
     <GalleryWrapper>
       <GalleryMasonry $cols={cols}>
         {pageItems.map((artwork) => (
-          <ArtworkCard key={artwork._id} artwork={artwork} />
+          <ArtworkCard
+            key={artwork._id}
+            artwork={artwork}
+            onSelect={adminMode ? setSelected : undefined}
+          />
         ))}
       </GalleryMasonry>
+      {adminMode && selected && (
+        <PreviewModal
+          adminMode
+          artwork={selected}
+          onClose={() => setSelected(null)}
+          onCategoryChange={handleCategoryChange}
+          onDeleted={handleDeleted}
+        />
+      )}
     </GalleryWrapper>
   );
 };

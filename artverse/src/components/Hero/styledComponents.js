@@ -6,23 +6,17 @@ const scrollUp = keyframes`
 `;
 
 export const HeroSection = styled.section`
-  /* Exactly one viewport tall, minus the navbar.
-     This is the critical fix — the hero no longer grows taller than the screen. */
   height: calc(100vh - ${({ theme }) => theme.navHeight});
   margin-top: ${({ theme }) => theme.navHeight};
   display: grid;
   grid-template-columns: 1fr 1fr;
-
-  /* overflow: hidden on the SECTION clips the scroll columns inside it.
-     Without this, the columns extend beyond the section and push the page down. */
   overflow: hidden;
   position: relative;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     grid-template-columns: 1fr;
-    /* On mobile, left side text + right side preview stacked */
     height: auto;
-    min-height: 100svh; /* svh = small viewport height, accounts for mobile browser chrome */
+    min-height: 100svh;
   }
 `;
 
@@ -127,9 +121,6 @@ export const GhostButton = styled.button`
 `;
 
 export const HeroRight = styled.div`
-  /* height: 100% fills the parent HeroSection exactly.
-     Combined with overflow: hidden on HeroSection, the columns
-     scroll inside this box and never escape it. */
   height: 100%;
   overflow: hidden;
   display: grid;
@@ -138,7 +129,7 @@ export const HeroRight = styled.div`
   padding: 8px;
   position: relative;
 
-  /* Top and bottom fade — makes the scroll look infinite, not cut off */
+  /* Fade to transparent so the canvas shows at the edges */
   &::before,
   &::after {
     content: '';

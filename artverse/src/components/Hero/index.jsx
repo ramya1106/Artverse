@@ -22,12 +22,11 @@ const COLUMN_CONFIG = [
   { duration: 38, offset: -80 },
 ];
 
-// Fallback images used when DB is empty (during early development)
+// Placeholder photos shown only when the gallery has no images yet
 const FALLBACK_SEEDS = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
 
-// Repeats an array until it has at least `minLength` items.
-// This is what prevents the gap — we fill the column with enough
-// repeated images that it's always taller than the viewport.
+// Repeats the images until there are at least minLength of them, so the column
+// is always taller than the screen and never shows a gap.
 const fillToLength = (arr, minLength) => {
   if (arr.length === 0) return arr;
   const result = [];
@@ -37,7 +36,6 @@ const fillToLength = (arr, minLength) => {
   return result;
 };
 
-// Single image tile
 const ScrollTile = React.memo(({ src, ratio }) => {
   const handleLoad = useCallback((e) => {
     e.target.classList.add('loaded');
@@ -47,21 +45,14 @@ const ScrollTile = React.memo(({ src, ratio }) => {
 
   return (
     <ScrollImageWrapper>
-      {/* aspect-ratio on placeholder matches the real image — no layout jump */}
+      {/* the placeholder uses the real aspect ratio, so nothing jumps when the image loads */}
       <ScrollPlaceholder $ratio={ratio} />
       <ScrollImage
         src={src}
         alt=""
         loading="lazy"
         onLoad={handleLoad}
-        style={{
-          aspectRatio: ratio,
-          position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-        }}
-        crossOrigin="anonymous"  // needed for blob download to work on cached images
+        crossOrigin="anonymous"
       />
     </ScrollImageWrapper>
   );
@@ -87,13 +78,12 @@ const Hero = ({ onExplore, onInstagram }) => {
 
 
   const buildColumn = (colIndex) => {
-    const MIN_TILES = 20; // guarantees no gap for any screen height
+    const MIN_TILES = 20; // enough tiles that no screen height shows a gap
 
     let baseTiles;
 
     if (gallery.length > 0) {
-      // Stagger which images each column starts with
-      // so the three columns don't all show the same image at the same time
+      // Each column starts at a different image so all three don't show the same one
       const offset = colIndex * Math.ceil(gallery.length / 3);
       const rotated = [
         ...gallery.slice(offset),
@@ -102,23 +92,22 @@ const Hero = ({ onExplore, onInstagram }) => {
 
       baseTiles = rotated.map((art) => ({
         src: art.imageURL,
-        // Use the real aspect ratio stored in MongoDB
-        // e.g. 400×600 image → ratio = "400 / 600"
+        // width and height are saved at upload time, e.g. "400 / 600"
         ratio: art.width && art.height
           ? `${art.width} / ${art.height}`
-          : '3 / 4',  // fallback portrait
+          : '3 / 4', // older records may not have them
       }));
     } else {
-      // Empty DB — use picsum with portrait aspect ratio
-      baseTiles = FALLBACK_SEEDS.map((seed, i) => ({
+      // Nothing uploaded yet, so show placeholder photos
+      baseTiles = FALLBACK_SEEDS.map((seed) => ({
         src: `https://picsum.photos/seed/${seed + colIndex * 7}/400/600`,
         ratio: '2 / 3',
       }));
     }
 
-    // Fill to MIN_TILES then duplicate for seamless loop
     const filled = fillToLength(baseTiles, MIN_TILES);
-    return [...filled, ...filled]; // duplication = seamless animation loop
+    // The list is doubled because the CSS animation scrolls up by half its height, then repeats
+    return [...filled, ...filled];
   };
 
   return (

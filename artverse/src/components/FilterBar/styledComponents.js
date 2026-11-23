@@ -17,7 +17,6 @@ export const FilterBarWrapper = styled.div`
 
 export const FilterInner = styled.div`
   display: flex;
-  gap: 0;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -35,8 +34,6 @@ export const FilterTab = styled.button`
   text-transform: uppercase;
   color: ${({ $active, theme }) =>
     $active ? theme.colors.text : theme.colors.textMuted};
-  background: transparent;
-  border: none;
   border-bottom: 2px solid
     ${({ $active, theme }) => ($active ? theme.colors.red : 'transparent')};
   font-family: ${({ theme }) => theme.fonts.mono};

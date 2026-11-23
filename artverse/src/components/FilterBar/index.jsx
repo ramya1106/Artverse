@@ -1,4 +1,3 @@
-import React from 'react';
 import { FILTER_CATEGORIES } from '../../data/artworks';
 import {
   FilterBarWrapper,

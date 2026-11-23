@@ -5,10 +5,6 @@ const fadeUp = keyframes`
   to   { opacity: 1; transform: translateY(0); }
 `;
 
-const spin = keyframes`
-  to { transform: rotate(360deg); }
-`;
-
 export const LoginPage = styled.div`
   min-height: 100vh;
   background: ${({ theme }) => theme.colors.black};
@@ -70,13 +66,6 @@ export const FormGroup = styled.div`
   margin-bottom: 1.25rem;
 `;
 
-export const Label = styled.label`
-  font-size: 0.58rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.textMuted};
-`;
-
 export const Input = styled.input`
   background: ${({ theme }) => theme.colors.surface2};
   border: 1px solid ${({ $error, theme }) =>
@@ -136,13 +125,4 @@ export const LoginButton = styled.button`
     opacity: 0.6;
     cursor: not-allowed;
   }
-`;
-
-export const Spinner = styled.div`
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: ${spin} 0.7s linear infinite;
 `;

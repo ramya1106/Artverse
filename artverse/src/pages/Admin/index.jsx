@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import AdminNav from '../../components/AdminNav';
 import LoginForm from '../../components/LoginForm';
 import UploadPost from '../../components/UploadPost';
 import UpdateFollowers from '../../components/UpdateFollowers';
+import AdminGallery from '../../components/AdminGallery';
+import RevenueStats from '../../components/RevenueStats';
 import {
   DashboardPage,
   DashboardMain,
@@ -17,6 +19,7 @@ import {
 
 const TABS = [
   { id: 'upload', label: 'Upload Post' },
+  { id: 'gallery', label: 'Gallery' },
   { id: 'followers', label: 'Update Followers' },
 ];
 
@@ -32,6 +35,8 @@ const AdminDashboard = () => {
           <DashboardTitle>Dashboard</DashboardTitle>
         </DashboardHeading>
 
+        <RevenueStats />
+
         <TabRow>
           {TABS.map((tab) => (
             <Tab
@@ -44,18 +49,26 @@ const AdminDashboard = () => {
           ))}
         </TabRow>
 
-        <ContentCard>
-          {activeTab === 'upload' && <UploadPost />}
-          {activeTab === 'followers' && <UpdateFollowers />}
-        </ContentCard>
+        {activeTab !== 'gallery' && (
+          <ContentCard>
+            {activeTab === 'upload' && <UploadPost />}
+            {activeTab === 'followers' && <UpdateFollowers />}
+          </ContentCard>
+        )}
       </DashboardMain>
+
+      {/* Gallery is full-width (same layout as the public site), so it sits
+          outside the narrow DashboardMain column. */}
+      {activeTab === 'gallery' && <AdminGallery />}
     </DashboardPage>
   );
 };
 
-// Login guard — shows login page if not authenticated
+// Shows the login page until the admin is signed in
 const Admin = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, checking } = useAuth();
+
+  if (checking) return <AdminNav showLogout={false} />; // restoring saved session
 
   if (!isAuthenticated) {
     return (

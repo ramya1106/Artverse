@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchStats } from '../../api';
+import formatCount from '../../utils/formatCount';
 import {
   StatsSection,
   StatsHeadingRow,
@@ -10,16 +11,6 @@ import {
   StatValue,
   StatLabel,
 } from './styledComponents';
-
-const formatNumber = (n) => {
-  if (!n && n !== 0) return { value: '—', suffix: '' };
-  if (n >= 1_000_000) return { value: (n / 1_000_000).toFixed(1), suffix: 'M' };
-  if (n >= 1_000) {
-    const k = n / 1_000;
-    return { value: Number.isInteger(k) ? k.toString() : k.toFixed(1), suffix: 'K' };
-  }
-  return { value: n.toString(), suffix: '' };
-};
 
 const StatsBar = () => {
   const [stats, setStats] = useState(null);
@@ -45,7 +36,6 @@ const StatsBar = () => {
 
   return (
     <StatsSection>
-      {/* Section heading — gives context to the numbers */}
       <StatsHeadingRow>
         <StatsEyebrow>By the numbers</StatsEyebrow>
         <StatsTitle>The community<br />speaks for itself</StatsTitle>
@@ -53,7 +43,7 @@ const StatsBar = () => {
 
       <StatsInner>
         {items.map(({ raw, label }) => {
-          const { value, suffix } = formatNumber(raw);
+          const { value, suffix } = formatCount(raw);
           return (
             <StatItem key={label}>
               <StatValue>

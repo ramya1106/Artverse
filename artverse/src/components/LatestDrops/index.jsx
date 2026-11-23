@@ -1,25 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ArtworkCard from '../ArtworkCard';
+import useWindowWidth from '../../hooks/useWindowWidth';
 import { fetchLatest } from '../../api';
 import {
   DropsSection,
   SectionHeader,
-  SectionTitleGroup,
   SectionEyebrow,
   SectionTitle,
   SectionSub,
   MasonryGrid,
 } from './styledComponents';
-
-const useWindowWidth = () => {
-  const [width, setWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    const handle = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handle);
-    return () => window.removeEventListener('resize', handle);
-  }, []);
-  return width;
-};
 
 const getColumnCount = (windowWidth) => {
   if (windowWidth >= 1024) return 6;
@@ -54,10 +44,10 @@ const LatestDrops = () => {
   return (
     <DropsSection>
       <SectionHeader>
-        <SectionTitleGroup>
+        <div>
           <SectionEyebrow>Just Arrived</SectionEyebrow>
           <SectionTitle>Latest Drops</SectionTitle>
-        </SectionTitleGroup>
+        </div>
         <SectionSub>Fresh work weekly</SectionSub>
       </SectionHeader>
 
